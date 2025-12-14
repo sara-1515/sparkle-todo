@@ -69,43 +69,27 @@ export default function UltimateSparkleToDoApp() {
   ];
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const result = await window.storage.get('sparkle-user-data');
-        if (result) {
-          const data = JSON.parse(result.value);
-          setTodos(data.todos || []);
-          setXp(data.xp || 0);
-          setLevel(data.level || 1);
-          setStreak(data.streak || 0);
-          setLastCompleted(data.lastCompleted);
-          setTheme(data.theme || 'bubblegum');
-          setEmojiSet(data.emojiSet || 'mix');
-          setAchievements(data.achievements || []);
-        }
-      } catch (error) {
-        console.log('No saved data yet, starting fresh! ✨');
-      }
-      setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-      setLoading(false);
-    };
-    loadData();
+    const data = JSON.parse(localStorage.getItem('sparkle-data') || '{}');
+    setTodos(data.todos || []);
+    setXp(data.xp || 0);
+    setLevel(data.level || 1);
+    setStreak(data.streak || 0);
+    setLastCompleted(data.lastCompleted);
+    setTheme(data.theme || 'bubblegum');
+    setEmojiSet(data.emojiSet || 'mix');
+    setAchievements(data.achievements || []);
+    setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
     if (!loading) {
-      const saveData = async () => {
-        try {
-          await window.storage.set('sparkle-user-data', JSON.stringify({
-            todos, xp, level, streak, lastCompleted, theme, emojiSet, achievements
-          }));
-        } catch (error) {
-          console.error('Failed to save data:', error);
-        }
-      };
-      saveData();
+      localStorage.setItem('sparkle-data', JSON.stringify({
+        todos, xp, level, streak, lastCompleted, theme, emojiSet, achievements
+      }));
     }
   }, [todos, xp, level, streak, lastCompleted, theme, emojiSet, achievements, loading]);
+
 
   useEffect(() => {
     const xpForNextLevel = level * 100;
