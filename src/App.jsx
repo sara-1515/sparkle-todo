@@ -13,6 +13,7 @@ export default function UltimateSparkleToDoApp() {
   const [theme, setTheme] = useState('bubblegum');
   const [emojiSet, setEmojiSet] = useState('mix');
   const [showSettings, setShowSettings] = useState(false);
+  const [selectedFont, setSelectedFont] = useState('nunito');
   const [xp, setXp] = useState(0);
   const [level, setLevel] = useState(1);
   const [streak, setStreak] = useState(0);
@@ -29,6 +30,18 @@ export default function UltimateSparkleToDoApp() {
     mint: { bg: 'from-green-100 via-teal-100 to-cyan-100', accent: 'from-green-400 to-teal-400', border: 'border-green-200' },
     peachy: { bg: 'from-orange-100 via-peach-100 to-yellow-100', accent: 'from-orange-400 to-yellow-400', border: 'border-orange-200' },
     holographic: { bg: 'from-pink-200 via-purple-200 to-blue-200', accent: 'from-pink-500 via-purple-500 to-blue-500', border: 'border-purple-300' }
+  };
+
+  const fonts = {
+    nunito: { name: 'Nunito', class: 'font-nunito' },
+    poppins: { name: 'Poppins', class: 'font-poppins' },
+    quicksand: { name: 'Quicksand', class: 'font-quicksand' },
+    comfortaa: { name: 'Comfortaa', class: 'font-comfortaa' },
+    varela: { name: 'Varela Round', class: 'font-varela' },
+    fredoka: { name: 'Fredoka', class: 'font-fredoka' },
+    baloo: { name: 'Baloo 2', class: 'font-baloo' },
+    righteous: { name: 'Righteous', class: 'font-righteous' },
+    bubblegum: { name: 'Bubblegum Sans', class: 'font-bubblegum' }
   };
 
   const categories = {
@@ -71,6 +84,7 @@ export default function UltimateSparkleToDoApp() {
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem('sparkle-data') || '{}');
     setTodos(data.todos || []);
+    setSelectedFont(data.selectedFont || 'nunito');
     setXp(data.xp || 0);
     setLevel(data.level || 1);
     setStreak(data.streak || 0);
@@ -85,10 +99,11 @@ export default function UltimateSparkleToDoApp() {
   useEffect(() => {
     if (!loading) {
       localStorage.setItem('sparkle-data', JSON.stringify({
-        todos, xp, level, streak, lastCompleted, theme, emojiSet, achievements
-      }));
+      todos, xp, level, streak, lastCompleted, theme, emojiSet, achievements, selectedFont
+    }));
+
     }
-  }, [todos, xp, level, streak, lastCompleted, theme, emojiSet, achievements, loading]);
+  }, [todos, xp, level, streak, lastCompleted, theme, emojiSet, achievements, loading, selectedFont]);
 
 
   useEffect(() => {
@@ -250,7 +265,7 @@ export default function UltimateSparkleToDoApp() {
   }
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${currentTheme.bg} p-4 sm:p-8 relative overflow-hidden`}>
+    <div className={`min-h-screen bg-gradient-to-br ${currentTheme.bg} ${fonts[selectedFont].class} p-4 sm:p-8 relative overflow-hidden`}>
       {showConfetti && (
         <div className="fixed inset-0 pointer-events-none z-50">
           {[...Array(50)].map((_, i) => (
@@ -353,6 +368,21 @@ export default function UltimateSparkleToDoApp() {
                   ))}
                 </div>
               </div>
+              <div>
+                <label className="block text-sm font-semibold text-purple-600 mb-2">Font Style</label>
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(fonts).map(([key, font]) => (
+                    <button
+                      key={key}
+                      onClick={() => setSelectedFont(key)}
+                      className={`px-4 py-2 rounded-full ${selectedFont === key ? `bg-gradient-to-r ${currentTheme.accent} text-white` : 'bg-gray-200'} ${font.class}`}
+                    >
+                      {font.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
             </div>
           </div>
         )}
